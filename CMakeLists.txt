@@ -8,6 +8,6 @@ fetchcontent_makeavailable(SFML)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(planet main.cpp perlin.cc)
+add_executable(planet main.cpp perlin.cpp)
 
 target_link_libraries(planet sfml-graphics)
