@@ -1,19 +1,19 @@
 #include "perlin.h"
 #include <cmath>
-#include <iostream>
+#include <random>
 #include <vector>
 using namespace std;
 
 // Constructors
 Perlin::Perlin(const int seed, const int width, const int height) : seed{seed} {
-	srand(seed);
+	mt19937 mt(seed);
+	uniform_real_distribution distrib(0.0f, 360.0f);
 
 	// Create influence vectors
 	for(int row = 0; row < height; row++){
-		std::vector<float> newRow = std::vector<float>(width);
+		vector<float> newRow = vector<float>(width);
 		for(int col = 0; col < width; col++){
-			const float angle = static_cast<float>(rand()) / static_cast<float>(RAND_MAX / 360);
-			newRow[col] = angle;
+			newRow[col] = distrib(mt);
 		}
 		influence.emplace_back(newRow);
 	}
