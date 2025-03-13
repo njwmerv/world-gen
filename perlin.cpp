@@ -38,7 +38,7 @@ float Perlin::smoothStep(const float x){
   	return ((6 * x - 15) * x + 10) * x * x * x;
 }
 
-float Perlin::perlin(const float x, const float y) const {
+float Perlin::perlinOctave(const float x, const float y) const {
 	// Get index of point
 	int ix = static_cast<int>(x);
 	int iy = static_cast<int>(y);
@@ -77,4 +77,15 @@ float Perlin::perlin(const float x, const float y) const {
     const float result = lerp(w2, h1, h2);
 
     return result;
+}
+
+float Perlin::perlin(const float x, const float y, float persistence, float lacunarity, const unsigned octaves) const{
+	float noise = 0;
+	for(int octave = 0; octave < octaves; octave++){
+		noise += persistence * perlinOctave(x * lacunarity, y * lacunarity);
+		persistence *= 0.5;
+		lacunarity *= 2.0;
+	}
+	noise = (noise + 1.0) / 2.0; // transform from [-1, 1] -> [0, 1]
+	return noise;
 }

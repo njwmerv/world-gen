@@ -26,7 +26,8 @@ public:
 	int getHeight() const;
 
 	// Sample perlin noise at point (x, y)
-	float perlin(float x, float y) const;
+	float perlinOctave(float x, float y) const;
+	float perlin(float x, float y, float persistence, float lacunarity, unsigned octaves) const;
 };
 
 #endif // PERLIN_H

@@ -29,6 +29,17 @@ sf::Color simpleTerrainColor(const float elevation) {
 	}
 }
 
+void generatePerlinMap(sf::Image& noiseImage, const Perlin& noiseGenerator, const Pos& position){
+	for(unsigned row = 0; row < WINDOW_HEIGHT; row++){
+		for(unsigned col = 0; col < WINDOW_WIDTH; col++){
+			const float persistence = 2.0f;
+			const float lacunarity = 0.005f;
+			const float noise = noiseGenerator.perlin(col + position.x, row + position.y, persistence, lacunarity, MAX_OCTAVES);
+			noiseImage.setPixel({col, row}, simpleTerrainColor(noise));
+		}
+	}
+}
+
 int main(){
 	constexpr int WINDOW_WIDTH = 1920;
 	constexpr int WINDOW_HEIGHT = 1080;
@@ -48,20 +59,7 @@ int main(){
 	const int seed = static_cast<int>(time(nullptr));
 	Perlin noiseGenerator(seed);
 
-	for(unsigned row = 0; row < WINDOW_HEIGHT; row++){
-		for(unsigned col = 0; col < WINDOW_WIDTH; col++){
-			float persistence = 1.0f;
-			float lacunarity = 0.005f;
-			float noise = 0;
-			for(int octave = 0; octave < MAX_OCTAVES; octave++){
-				noise += persistence * noiseGenerator.perlin(col * lacunarity, row * lacunarity);
-				persistence *= 0.5;
-				lacunarity *= 2.0;
-			}
-			noise = (noise + 1.0) / 2.0; // transform from [-1, 1] -> [0, 1]
-			noiseImage.setPixel({col, row}, simpleTerrainColor(noise));
-		}
-	}
+	generatePerlinMap(noiseImage, noiseGenerator, position);
 
 	// Setting up display 2
 	noiseTexture.loadFromImage(noiseImage);
