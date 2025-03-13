@@ -20,10 +20,10 @@ Perlin::Perlin(const int seed, const int width, const int height) : seed{seed} {
 }
 
 // Accessors
-int Perlin::getSeed() {return seed;}
-std::vector<std::vector<float>> Perlin::getInfluences() {return influence;}
-int Perlin::getWidth() {return influence.at(0).size() - 1;}
-int Perlin::getHeight() {return influence.size() - 1;}
+int Perlin::getSeed() const {return seed;}
+vector<vector<float>> Perlin::getInfluences() const {return influence;}
+int Perlin::getWidth() const {return influence.at(0).size() - 1;}
+int Perlin::getHeight() const {return influence.size() - 1;}
 
 // Actual Methods
 float Perlin::influenceDotOffset(const float angle, const vector2& vector){
@@ -38,7 +38,7 @@ float Perlin::smoothStep(const float x){
   	return ((6 * x - 15) * x + 10) * x * x * x;
 }
 
-float Perlin::perlin(const float x, const float y){
+float Perlin::perlin(const float x, const float y) const {
 	// Get index of point
 	int ix = static_cast<int>(x);
 	int iy = static_cast<int>(y);

@@ -20,13 +20,13 @@ class Perlin{
 public:
 	explicit Perlin(int seed = 0, int width = 64, int height = 64);
 
-	int getSeed();
-	std::vector<std::vector<float>> getInfluences();
-	int getWidth();
-	int getHeight();
+	int getSeed() const;
+	std::vector<std::vector<float>> getInfluences() const;
+	int getWidth() const;
+	int getHeight() const;
 
 	// Sample perlin noise at point (x, y)
-	float perlin(float x, float y);
+	float perlin(float x, float y) const;
 };
 
 #endif // PERLIN_H
