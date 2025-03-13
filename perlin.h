@@ -11,14 +11,14 @@ class Perlin{
 		float x, y;
 	} vector2;
 
-	float influenceDotOffset(const float angle, const vector2& vector);
+	static float influenceDotOffset(float angle, const vector2& vector);
 
-	float lerp(const float weight, const float a1, const float a2);
+	static float lerp(float weight, float a1, float a2);
 
-	float smoothStep(const float x);
+	static float smoothStep(float x);
 
 public:
-	Perlin(const int seed = 0, const int width = 64, const int height = 64);
+	explicit Perlin(int seed = 0, int width = 64, int height = 64);
 
 	int getSeed();
 	std::vector<std::vector<float>> getInfluences();
@@ -26,7 +26,7 @@ public:
 	int getHeight();
 
 	// Sample perlin noise at point (x, y)
-	float perlin(const float x, const float y);
+	float perlin(float x, float y);
 };
 
 #endif // PERLIN_H

@@ -1,4 +1,3 @@
-#include <algorithm>
 #include <SFML/Graphics.hpp>
 #include "perlin.h"
 #include "SFML/Graphics/Image.hpp"
@@ -11,29 +10,29 @@ using namespace std;
 
 sf::Color simpleTerrainColor(const float elevation) {
 	if(elevation < 0.3f){ // Deep water
-		return sf::Color(0, 0, 150);
+		return {0, 0, 150};
 	}
 	else if(elevation < 0.4f){ // Shallow water
-		return sf::Color(0, 100, 200);
+		return {0, 100, 200};
 	}
 	else if(elevation < 0.425f){ // Beach
-		return sf::Color(240, 220, 130);
+		return {240, 220, 130};
 	}
 	else if(elevation < 0.7f){ // Grass
-		return sf::Color(34, 139, 34);
+		return {34, 139, 34};
 	}
 	else if(elevation < 0.8f){ // Mountain
-		return sf::Color(100, 100, 100);
+		return {100, 100, 100};
 	}
 	else{ // Snow
-		return sf::Color(255, 255, 255);
+		return {255, 255, 255};
 	}
 }
 
 int main(){
-	const int WINDOW_WIDTH = 1920;
-	const int WINDOW_HEIGHT = 1080;
-	const int MAX_OCTAVES = 8;
+	constexpr int WINDOW_WIDTH = 1920;
+	constexpr int WINDOW_HEIGHT = 1080;
+	constexpr int MAX_OCTAVES = 8;
 
 	// Setting up Display (SFML)
 	sf::RenderWindow window(sf::VideoMode({WINDOW_WIDTH, WINDOW_HEIGHT}), "Perlin");
@@ -46,18 +45,18 @@ int main(){
 	sf::Texture noiseTexture;
 
 	// Generating the Perlin noise
-	const int seed = static_cast<int>(time(0));
-	Perlin noiseGenerator = Perlin(seed);
+	const int seed = static_cast<int>(time(nullptr));
+	Perlin noiseGenerator(seed);
 
 	for(unsigned row = 0; row < WINDOW_HEIGHT; row++){
 		for(unsigned col = 0; col < WINDOW_WIDTH; col++){
-			float amplitude = 1.0;
-			float frequency = 0.005f;
+			float persistence = 1.0f;
+			float lacunarity = 0.005f;
 			float noise = 0;
 			for(int octave = 0; octave < MAX_OCTAVES; octave++){
-				noise += amplitude * noiseGenerator.perlin(col * frequency, row * frequency);
-				amplitude *= 0.5;
-				frequency *= 2.0;
+				noise += persistence * noiseGenerator.perlin(col * lacunarity, row * lacunarity);
+				persistence *= 0.5;
+				lacunarity *= 2.0;
 			}
 			noise = (noise + 1.0) / 2.0; // transform from [-1, 1] -> [0, 1]
 			noiseImage.setPixel({col, row}, simpleTerrainColor(noise));
