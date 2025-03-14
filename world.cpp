@@ -3,7 +3,7 @@
 #include <sstream>
 
 World::World(const int seed, unsigned viewWidth, unsigned viewHeight):
-    worldOffsetX(0), worldOffsetY(0),
+    worldOffsetX(50), worldOffsetY(50),
     window(sf::VideoMode({viewWidth, viewHeight}), "World"),
     noiseGenerator(seed, Chunk::SIZE, Chunk::SIZE){
     window.setFramerateLimit(60);
@@ -74,22 +74,31 @@ void World::generateChunks(){
 }
 
 void World::handleInput(const sf::Event::KeyPressed* key){
-    //const float delta = clock.restart().asSeconds();
-    if(worldOffsetX - 1 >= 0 && (key->scancode == sf::Keyboard::Scan::A || key->scancode == sf::Keyboard::Scan::Left)){
-        worldOffsetX -= 1;
-        view.move({-Chunk::SIZE, 0});
+    const float delta = clock.restart().asSeconds();
+    const float movementSpeed = Chunk::SIZE * delta;
+    float viewTop = view.getCenter().y - view.getSize().y / 2;
+    float viewLeft = view.getCenter().x - view.getSize().x / 2;
+    if(viewLeft - movementSpeed >= 0
+        && (key->scancode == sf::Keyboard::Scan::A || key->scancode == sf::Keyboard::Scan::Left)){
+        view.move({-movementSpeed, 0});
+        viewLeft = view.getCenter().x - view.getSize().x / 2;
+        worldOffsetX = static_cast<int>(viewLeft / Chunk::SIZE);
     }
     if(key->scancode == sf::Keyboard::Scan::D || key->scancode == sf::Keyboard::Scan::Right){
-        worldOffsetX += 1;
-        view.move({Chunk::SIZE, 0});
+        view.move({movementSpeed, 0});
+        viewLeft = view.getCenter().x - view.getSize().x / 2;
+        worldOffsetX = static_cast<int>(viewLeft / Chunk::SIZE);
     }
-    if(worldOffsetY - 1 >= 0 && (key->scancode == sf::Keyboard::Scan::W || key->scancode == sf::Keyboard::Scan::Up)){
-        worldOffsetY -= 1;
-        view.move({0, -Chunk::SIZE});
+    if(viewTop - movementSpeed >= 0
+        && (key->scancode == sf::Keyboard::Scan::W || key->scancode == sf::Keyboard::Scan::Up)){
+        view.move({0, -movementSpeed});
+        viewTop = view.getCenter().y - view.getSize().y / 2;
+        worldOffsetY = static_cast<int>(viewTop / Chunk::SIZE);
     }
     if(key->scancode == sf::Keyboard::Scan::S || key->scancode == sf::Keyboard::Scan::Down){
-        worldOffsetY += 1;
-        view.move({0, Chunk::SIZE});
+        view.move({0, movementSpeed});
+        viewTop = view.getCenter().y - view.getSize().y / 2;
+        worldOffsetY = static_cast<int>(viewTop / Chunk::SIZE);
     }
 }
 

@@ -1,4 +1,3 @@
-#include <SFML/Graphics.hpp>
 #include "chunk.h"
 #include "world.h"
 
