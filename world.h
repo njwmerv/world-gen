@@ -28,6 +28,8 @@ private:
     void handleInput(const sf::Event::KeyPressed* key);
 
     void generateChunks();
+
+    void displayPosition();
 };
 
 #endif //WORLD_H
