@@ -5,7 +5,8 @@
 World::World(const int seed, unsigned viewWidth, unsigned viewHeight):
     worldOffsetX(50), worldOffsetY(50),
     window(sf::VideoMode({viewWidth, viewHeight}), "World"),
-    noiseGenerator(seed, Chunk::SIZE, Chunk::SIZE){
+    noiseGenerator(seed, Chunk::SIZE, Chunk::SIZE),
+    font{"./../Roboto-Regular.ttf"}, positionText{font}{
     window.setFramerateLimit(60);
     view.setCenter({
         static_cast<float>(worldOffsetX * Chunk::SIZE + viewWidth / 2),
@@ -13,6 +14,10 @@ World::World(const int seed, unsigned viewWidth, unsigned viewHeight):
     });
     view.setSize({static_cast<float>(viewWidth), static_cast<float>(viewHeight)});
     window.setView(view);
+    positionText.setCharacterSize(48);
+    positionText.setFillColor(sf::Color::White);
+    positionText.setOutlineColor(sf::Color::Black);
+    positionText.setOutlineThickness(3);
 
     // Initial chunks
     generateChunks();
@@ -103,15 +108,9 @@ void World::handleInput(const sf::Event::KeyPressed* key){
 }
 
 void World::displayPosition(){
-    const sf::Font fontRoboto("./../Roboto-Regular.ttf");
-    sf::Text offsetText(fontRoboto);
-    offsetText.setCharacterSize(48);
-    offsetText.setFillColor(sf::Color::White);
-    offsetText.setOutlineColor(sf::Color::Black);
-    offsetText.setOutlineThickness(3);
-    offsetText.setPosition({view.getCenter().x - view.getSize().x / 2, view.getCenter().y - view.getSize().y / 2});
+    positionText.setPosition({view.getCenter().x - view.getSize().x / 2, view.getCenter().y - view.getSize().y / 2});
     std::ostringstream oss;
     oss << "Position: (" << worldOffsetX << ", " << worldOffsetY << ")";
-    offsetText.setString(oss.str());
-    window.draw(offsetText);
+    positionText.setString(oss.str());
+    window.draw(positionText);
 }

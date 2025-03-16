@@ -15,6 +15,8 @@ public:
     Perlin noiseGenerator;
     std::vector<Chunk*> chunksList;
     std::set<std::pair<int, int>> chunks;
+    sf::Font font;
+    sf::Text positionText;
 
     static constexpr int MOVEMENT_SPEED = 64;
 
