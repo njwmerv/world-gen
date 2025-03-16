@@ -1,6 +1,7 @@
 #include "world.h"
 #include <iostream>
 #include <sstream>
+#include <thread>
 
 World::World(const int seed, unsigned viewWidth, unsigned viewHeight):
     worldOffsetX(50), worldOffsetY(50),
@@ -63,19 +64,37 @@ bool World::update(){
 }
 
 void World::generateChunks(){
+    const auto t1 = std::chrono::high_resolution_clock::now();
+    bool generated = false;
     const int nSectorsX = window.getSize().x / Chunk::SIZE + 1;
     const int nSectorsY = window.getSize().y / Chunk::SIZE + 1;
+    std::vector<std::thread> threads;
 
     for(int x = -1; x < nSectorsX; x++){
         if(x + worldOffsetX < 0) continue;
         for(int y = -1; y < nSectorsY; y++){
             if(y + worldOffsetY < 0 || chunks.contains({x + worldOffsetX, y + worldOffsetY})) continue;
             std::cout << "Generating chunk at: " << (x + worldOffsetX) << ", " << (y + worldOffsetY) << std::endl;
-            Chunk* chunk =  new Chunk{x + worldOffsetX, y + worldOffsetY, noiseGenerator};
-            chunksList.emplace_back(chunk);
-            chunks.insert({x + worldOffsetX, y + worldOffsetY});
+            threads.emplace_back(&generateAChunk, this, x, y, std::ref(noiseGenerator));
+            generated = true;
         }
     }
+
+    for(auto& thread : threads){
+        if(thread.joinable()) thread.join();
+    }
+
+    if(generated){
+        const auto t2 = std::chrono::high_resolution_clock::now();
+        const auto ms_int = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1);
+        std::cout << "Chunk generation time: " << ms_int.count() << " ms" << std::endl;
+    }
+}
+
+void World::generateAChunk(const int x, const int y, const Perlin& noiseGenerator){
+    Chunk* chunk =  new Chunk{x + worldOffsetX, y + worldOffsetY, noiseGenerator};
+    chunksList.emplace_back(chunk);
+    chunks.insert({x + worldOffsetX, y + worldOffsetY});
 }
 
 void World::handleInput(const sf::Event::KeyPressed* key){

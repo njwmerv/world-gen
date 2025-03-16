@@ -31,6 +31,8 @@ private:
 
     void generateChunks();
 
+    void generateAChunk(int x, int y, const Perlin& noiseGenerator);
+
     void displayPosition();
 };
 
