@@ -26,6 +26,8 @@ private:
     static constexpr int MAX_OCTAVES = 4;
 
     static sf::Color mapNoiseToColour(float elevation);
+
+    void generatePartialChunk(const Perlin& noiseGenerator, sf::Image& image, std::mutex& mutex, int t, int b, int l, int r) const;
 };
 
 #endif //CHUNK_H
