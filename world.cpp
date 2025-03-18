@@ -75,7 +75,7 @@ void World::generateChunks(){
         for(int y = -1; y < nSectorsY; y++){
             if(y + worldOffsetY < 0 || chunks.contains({x + worldOffsetX, y + worldOffsetY})) continue;
             std::cout << "Generating chunk at: " << (x + worldOffsetX) << ", " << (y + worldOffsetY) << std::endl;
-            threads.emplace_back(&generateAChunk, this, x, y, std::ref(noiseGenerator));
+            threads.emplace_back(&World::generateAChunk, this, x, y, std::ref(noiseGenerator));
             generated = true;
         }
     }
